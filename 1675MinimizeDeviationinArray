@@ -1,0 +1,43 @@
+/*
+Hint-
+(1/3)
+Assume you start with the minimum possible value for each number 
+so you can only multiply a number by 2 till it reaches its maximum possible value.
+(2/3)
+If there is a better solution than the current one, 
+then it must have either its maximum value less than the current maximum value, 
+or the minimum value larger than the current minimum value.
+(3/3)
+Since that we only increase numbers (multiply them by 2), we cannot decrease the current maximum value, 
+so we must multiply the current minimum number by 2.
+*/
+
+class Solution {
+    public int minimumDeviation(int[] nums) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        int minVal = Integer.MAX_VALUE;
+        for (int num : nums) {
+            if (num % 2 == 1)
+                num = num * 2;
+            pq.offer(num);
+            minVal = Math.min(minVal, num);
+        }
+        int minDeviation = Integer.MAX_VALUE;
+        while (true) {
+            int maxVal = pq.poll();
+            minDeviation = Math.min(minDeviation, maxVal - minVal);
+            if (maxVal % 2 == 1)
+                break;
+            maxVal = maxVal / 2;
+            minVal = Math.min(minVal, maxVal);
+            pq.offer(maxVal);
+        }
+        return minDeviation;
+    }
+}
+
+Related Topics-
+Array
+Greedy
+Heap (Priority Queue)
+Ordered Set
