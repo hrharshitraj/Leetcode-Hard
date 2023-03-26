@@ -1,0 +1,37 @@
+/*
+Hint-
+(1/2)
+How many cycles can each node at most be part of?
+(2/2)
+Each node can be part of at most one cycle. 
+Start from each node and find the cycle that it is part of if there is any. 
+Save the already visited nodes to not repeat visiting the same cycle multiple times.
+*/
+
+class Solution {
+    public int longestCycle(int[] edges) {
+    int ans = -1;
+    int time = 1;
+    int[] timeVisited = new int[edges.length];
+
+    for (int i = 0; i < edges.length; ++i) {
+      if (timeVisited[i] > 0)
+        continue;
+      final int startTime = time;
+      int u = i;
+      while (u != -1 && timeVisited[u] == 0) {
+        timeVisited[u] = time++;
+        u = edges[u]; // Move to next node
+      }
+      if (u != -1 && timeVisited[u] >= startTime)
+        ans = Math.max(ans, time - timeVisited[u]);
+    }
+
+    return ans;
+  }
+}
+
+Related Topics-
+Depth-First Search
+Graph
+Topological Sort
