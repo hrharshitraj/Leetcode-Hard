@@ -1,0 +1,48 @@
+/*
+Hint-
+(1/2)
+Use dynamic programming to find the optimal solution by 
+saving the previous best like-time coefficient and its corresponding element sum.
+(2/2)
+If adding the current element to the previous best like-time coefficient and 
+its corresponding element sum would increase the best like-time coefficient, 
+then go ahead and add it. Otherwise, keep the previous best like-time coefficient.
+*/
+
+class Solution {
+    public int maxSatisfaction(int[] satisfaction) {
+        Arrays.sort(satisfaction);
+        int startIndex = -1;
+        int length = satisfaction.length;
+        for (int i = 0; i < length; i++) {
+            if (satisfaction[i] >= 0) {
+                startIndex = i;
+                break;
+            }
+        }
+        if (startIndex < 0)
+            return 0;
+        int sum = 0;
+        int totalSatisfaction = 0;
+        int time = 1;
+        for (int i = startIndex, j = 1; i < length; i++, j++) {
+            sum += satisfaction[i];
+            totalSatisfaction += satisfaction[i] * j;
+        }
+        int maxSatisfaction = totalSatisfaction;
+        for (int i = startIndex - 1; i >= 0; i--) {
+            sum += satisfaction[i];
+            if (sum < 0)
+                break;
+            totalSatisfaction += sum;
+            maxSatisfaction = Math.max(maxSatisfaction, totalSatisfaction);
+        }
+        return maxSatisfaction;
+    }
+}
+
+Related Topics-
+Array
+Dynamic Programming
+Greedy
+Sorting
