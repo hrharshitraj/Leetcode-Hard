@@ -1,0 +1,88 @@
+/*
+Hint-
+(1/4)
+Use two pointers to create a window of letters in s, which would have all the characters from t.
+(2/4)
+Expand the right pointer until all the characters of t are covered.
+(3/4)
+Once all the characters are covered, 
+move the left pointer and ensure that all the characters are still covered to minimize the subarray size.
+(4/4)
+Continue expanding the right and left pointers until you reach the end of s.
+*/
+
+class Solution {
+    public String minWindow(String s, String t) {
+        int sLen = s.length();
+        int tLen = t.length();
+        
+        // To store the frequency of String 's' characters.
+        HashMap<Character,Integer> idxMap = new HashMap();
+        // To store the frequency of String 't' characters. 
+        HashMap<Character,Integer> tFreqMap = new HashMap();
+
+        // All the characters of 't' can't be there in 's' if length of 's' is smaller.
+        if(sLen<tLen) return "";
+
+        // To put all the characters and their frequency in tFrepMap HashMap so that we can see which all elements are there in idxMap similar to tFreqMap;
+        for(int i=0; i<tLen; i++) {
+            tFreqMap.put(t.charAt(i),tFreqMap.getOrDefault(t.charAt(i),0)+1);
+        }
+
+        // It's should have the number of characters in String 't' to get the valid length of Substring which has all the characters of 't' in it.
+        int elements = 0;
+
+        int low = -1;
+        int high = -1;
+        String ans = "";
+
+        while(true) {
+            boolean f1 = false;    
+            boolean f2 = false;    
+            while(high<sLen-1 && elements<tLen) {       
+                high++;
+                // Put all the characters of 's' in idxMap;
+                idxMap.put(s.charAt(high),idxMap.getOrDefault(s.charAt(high),0)+1);
+
+                // If value of key(charAt(high)) in idxMap is less than or equal to the value of key in tFreqMap, it means this character is contibuting to find the Minimum window Substring, so increament elements by 1;
+                if(idxMap.getOrDefault(s.charAt(high),0)<=tFreqMap.getOrDefault(s.charAt(high),0)) elements++;
+
+                // It tells if you have gone to this particular loop to acquire characters or not.
+                f1 = true;
+            }
+
+            while(low<high && elements==tLen) {
+                String pAns = s.substring(low+1,high+1);   // high+1th element excluded
+                // If we have got the substring for the first time, store it in ans;
+
+                // If we have already got an answer, then check if the current ans(pAns) which we have got is smaller than already stored ans in length or not;
+                if(ans.length()==0 || pAns.length()<ans.length()) ans = pAns; 
+
+                low++;
+                // Remove the current character from the idxMap;
+                if(idxMap.get(s.charAt(low))==1) idxMap.remove(s.charAt(low));
+                // Decrease value if it's greater than 1;
+                else idxMap.put(s.charAt(low),idxMap.get(s.charAt(low))-1);
+
+                // If the current character is present in 't', we have to check if its value in idxMap is less than the value in tFreqMap, if yes then on removal of this character, we will not be getting substring which would have all the characters of 't' in 's';
+                // '<' because you have just remove that character, so if it was 1 more earlier, on removal it's equal not so it doesn't affect the valid substring;
+                if(tFreqMap.containsKey(s.charAt(low))) {
+                    if(idxMap.getOrDefault(s.charAt(low),0)<tFreqMap.getOrDefault(s.charAt(low),0)) elements--;    // Not all the characters of tFreqMap is in the idxMap left;
+                }
+
+                // It tells if you have gone to this particular loop to collect valid substring and release characters or not.
+                f2 = true;
+            }
+
+            // If either of the loop is terminated, it means we have got the Minimum window Substring, come out of the loop.
+            if(f1==false && f2==false) break;
+        }
+        return ans;
+    }
+}
+
+Related Topics-
+Hash Table
+String
+Sliding Window
+
