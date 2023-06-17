@@ -1,0 +1,50 @@
+// Same as 122. Best Time to Buy and Sell Stock II, just here only top 2 profits are to be considered;
+// Problem here is-
+// [1,2,4,2,5,7,2,4,9,0] -> In 122, we used to buy a[0](1) and sell it at a[2]4 to get profit of 3, then buy at a[3]2, sell at a[5]7 to get profit of 5, then buy at a[7]2, sell at a[9]9 to get profit of 7, in total there would be profit of 15;
+// In this problem top 2 profit is 7 and 5 which would be 12, but the actual profit is 13.
+// By buying a[0]1 and selling it at a[5]7 to get profit 6, then but at a[6]2, sell it at a[9]9 to get profit of 7, total profit 7+6=13;
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int min = 0;
+        int max = 0;
+        int minPrice = prices[0];
+        int profit = 0;
+
+        for(int i=1; i<n; i++) {
+            if((prices[i]<=minPrice) || (prices[i]<prices[i-1])) {
+                minPrice = prices[i];
+                if(profit>min) {
+                    if(profit>max) {
+                        min = max;
+                        max = profit;
+                    }
+                    else {
+                        min = profit;
+                    }
+                }
+                profit = 0;
+            }
+            else if(prices[i]>minPrice) {
+                profit = Math.max(profit,(prices[i]-minPrice));
+            }
+        }
+
+        if(profit>min) {
+            if(profit>max) {
+                min = max;
+                max = profit;
+            }
+            else {
+                min = profit;
+            }
+        }
+
+        return max+min;
+    }
+}
+
+Related Topics-
+Array
+Dynamic Programming
