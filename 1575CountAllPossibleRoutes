@@ -1,0 +1,43 @@
+/*
+Hint-
+(1/2)
+Use dynamic programming to solve this problem with each state defined by the city index and fuel left.
+(2/2)
+Since the array contains distinct integers fuel will always be spent in each move and so there can be no cycles.
+*/
+
+class Solution {
+    // Memoization-
+    private int possRoutes(int[] locations, int idx, int finish, int fuel, int[][] dp) {
+        int n = locations.length;
+        int routes = 0;
+        int MOD = 1000000007;    // Since the answer may be too large, return it modulo 109 + 7.
+
+        if(idx==finish) {
+            if(fuel>=0) routes++;    // Since, you can go to a location any number of time, you need not to return and stop when you get a valid route, just routes++ and again keep doing the same until you have fuel to roam around;
+            else return routes;
+        }
+        else if(fuel<=0) return routes;     // You don't have fuels left and you also havn't reached finish location;
+
+        if(dp[idx][fuel]!=-1) return dp[idx][fuel];    // If already computed, return the value;
+        for(int i=0; i<n; i++) {    // From every location, you could go to every location except the current location;
+            if(i!=idx) {
+                routes = (routes + possRoutes(locations,i,finish,fuel-(Math.abs(locations[i]-locations[idx])),dp))%MOD;
+            }
+        }
+        return dp[idx][fuel] = routes;   // Store the value in dp[][];
+    }
+
+    public int countRoutes(int[] locations, int start, int finish, int fuel) {
+        int[][] dp = new int[101][201];  // locations.length==100, fuel.length==200;
+        for(int[] row : dp) Arrays.fill(row, -1);   // start(idx) and fuel are changing at every iteration, so we need to have a 2D array initialised as -1;
+        // for(int i=0; i<101; i++) Arrays.fill(dp[i], -1);
+
+        return possRoutes(locations,start,finish,fuel,dp);
+    }
+}
+
+Related Topics-
+Array
+Dynamic Programming
+Memoization
