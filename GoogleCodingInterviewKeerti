@@ -1,0 +1,52 @@
+import java.util.*;
+public class Main {
+    public static List<String> subs(String bigstr, String smallstr) {
+        List<String> list = new ArrayList();
+        int len = bigstr.length();
+        int n = smallstr.length();
+        
+        HashMap<Character, Integer> smallMap = new HashMap();
+        for(int i=0; i<n; i++) {
+            smallMap.put(smallstr.charAt(i),smallMap.getOrDefault(smallstr.charAt(i),0)+1);
+        }
+        
+        HashMap<Character, Integer> bigMap = new HashMap();
+        int low = 0;
+        int high = 0;
+        
+        while(high<len) {
+            bigMap.put(bigstr.charAt(high),bigMap.getOrDefault(bigstr.charAt(high),0)+1);
+            int bigidx = bigMap.get(bigstr.charAt(high));
+            int smallidx = smallMap.get(bigstr.charAt(high));
+            if(smallidx<bigidx) {
+                while(smallidx<bigidx) {
+             bigMap.put(bigstr.charAt(low),bigMap.getOrDefault(bigstr.charAt(low),0)-1);
+                low++;
+                    bigidx = bigMap.get(bigstr.charAt(high));
+                }
+            }
+            // else if(smallidx>=bigidx) high++;
+            else if((high-low+1)==n) {
+                String curr = bigstr.substring(low, high+1);
+                System.out.println(curr);
+                list.add(curr);
+                
+                if(bigidx>1) bigMap.put(bigstr.charAt(low),bigMap.getOrDefault(bigstr.charAt(low),0)-1);
+                else bigMap.remove(bigstr.charAt(low));
+                low++;
+            }
+            high++;
+        }
+        return list;
+    }
+    
+    public static void main(String[] args) {
+        String bigstr = "cbabcacabca";
+        String smallstr = "abcc";
+        
+        List<String> list = new ArrayList();
+        list = subs(bigstr,smallstr);
+        
+        System.out.println(list);
+    }
+}
