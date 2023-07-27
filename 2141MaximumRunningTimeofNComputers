@@ -1,0 +1,33 @@
+/*
+Hint-
+(1/2)
+For a given running time, can you determine if it is possible to run all n computers simultaneously?
+(2/2)
+Try to use Binary Search to find the maximal running time
+*/
+
+class Solution {
+  public long maxRunTime(int n, int[] batteries) {
+    long sum = Arrays.stream(batteries).asLongStream().sum();
+
+    Arrays.sort(batteries);
+
+    // Max battery is greater than the average, so it can last forever
+    // Reduce the problem from size n to size n - 1
+    int i = batteries.length - 1;
+    while (batteries[i] > sum / n) {
+      sum -= batteries[i--];
+      --n;
+    }
+
+    // If the max battery <= average running time,
+    // It won't be waste, and so do smaller batteries
+    return sum / n;
+  }
+}
+
+Related Topics-
+Array
+Binary Search
+Greedy
+Sorting
