@@ -1,32 +1,25 @@
 class Solution {
- public:
-  int strangePrinter(string s) {
-    const int n = s.length();
-    // dp[i][j] := min # of turns to print s[i..j]
-    dp.resize(n, vector<int>(n));
-    return strangePrinter(s, 0, n - 1);
-  }
-
- private:
-  vector<vector<int>> dp;
-
-  int strangePrinter(const string& s, int i, int j) {
-    if (i > j)
+  public int strangePrinter(String s) {
+    if (s.isEmpty())
       return 0;
-    if (dp[i][j] > 0)
-      return dp[i][j];
 
-    // Print s[i]
-    dp[i][j] = strangePrinter(s, i + 1, j) + 1;
+    final int n = s.length();
+    // dp[i][j] := min # of turns to print s[i..j]
+    int[][] dp = new int[n][n];
+    Arrays.stream(dp).forEach(row -> Arrays.fill(row, n));
 
-    for (int k = i + 1; k <= j; ++k)
-      if (s[k] == s[i])
-        dp[i][j] = min(dp[i][j], strangePrinter(s, i, k - 1) +
-                                     strangePrinter(s, k + 1, j));
+    for (int i = 0; i < n; ++i)
+      dp[i][i] = 1;
 
-    return dp[i][j];
+    for (int j = 0; j < n; ++j)
+      for (int i = j; i >= 0; --i)
+        for (int k = i; k < j; ++k)
+          dp[i][j] =
+              Math.min(dp[i][j], dp[i][k] + dp[k + 1][j] - (s.charAt(k) == s.charAt(j) ? 1 : 0));
+
+    return dp[0][n - 1];
   }
-};
+}
 
 Related Topics-
 String
